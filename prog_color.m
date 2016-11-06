@@ -1,7 +1,7 @@
 clearvars;
 
 %données initiales
-I = imread('lenna.jpg');
+I = imread('sample1.png');
 
 %dimensions de l'image
 [nI, pI, qI] = size(I);
@@ -44,7 +44,7 @@ HOld = zeros(r,p);
 epsW = 1e-5;
 epsH = 1e-5;
 
-iter = 0;
+iter = 0
 muW = 0.85;
 muH = 0.85;
 while iter<1500%norm(W-WOld) > epsW || norm(H-HOld) > epsH
@@ -70,7 +70,7 @@ while iter<1500%norm(W-WOld) > epsW || norm(H-HOld) > epsH
             muH = muH/2;
         end
     end
-    iter = iter + 1;
+    iter = iter + 1
 end
 
 
