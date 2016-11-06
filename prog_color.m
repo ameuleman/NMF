@@ -116,5 +116,5 @@ imshow(uint8(RIS + RID))
 
 subplot(1,5,5)
 title('Image sans spécularité')
-imshow(uint8(double(I)-0.6*RIS))
+imshow(uint8(double(I)-0.5*RIS))
 
