@@ -25,27 +25,18 @@ V = double(V);
 r = 2;
 
 %sparceness
-sW = 0;
-sH = 0;
+sH1 = 0.005;
+sH2 = 0.4;
 
 %initialisation de W et H
 W = rand(n,r);
 H = rand(r,p);
 
-if sW > 0
-    L1W = sqrt(n)*(1-sW)+sW;
-    for i=1:r
-        W(:,i) = projeter(W(:,i)',L1W,1)';
-    end
-end
-
-if sH > 0
-    L1 = (1-sH)*sqrt(p)+sH;
-    for i=1:r
-        H(i,:) = projeter(H(i,:),L1,1);
-    end
-end
-
+L1 = (1-sH1)*sqrt(p)+sH1;
+H(1,:) = projeter(H(1,:),L1,1);
+L1 = (1-sH2)*sqrt(p)+sH1;
+H(2,:) = projeter(H(2,:),L1,1);
+    
 WOld = zeros(n,r);
 HOld = zeros(r,p);
 
@@ -54,81 +45,65 @@ epsW = 1e-5;
 epsH = 1e-5;
 
 
-iter = 0
+iter = 0;
 muW = 0.85;
 muH = 0.85;
 while iter<1500%norm(W-WOld) > epsW || norm(H-HOld) > epsH
-    %if norm(W-WOld) > epsW
-        if sW > 0
-            WOld = W;
-            muW = 1.2*muW;
-            flagW = true;
-            obj = norm(V-W*H);
-            
-            while flagW
-               W = W-muW*(W*H-V)*H';
-               %projection
-               L2W = arrayfun(@(i) norm(W(:,i)), 1:r);
-               for i=1:r
-                   W(:,i) = projeter(W(:,i)',L1W*L2W(i),L2W(i))';
-               end
+    W = W.*(V*H')./(W*H*H');
 
-               
-               if norm(V-W*H) < obj || muW < 1e-200
-                   flagW = false;
-               else
-                   muW = muW/2;
-               end
-            end
+    if sH2 > 0
+        HOld = H;
+        muH = 1.2*muH;
+        flagH = true;
+        obj = norm(V-W*H);
             
-        else%algo multiplicatif
-            W = W.*(V*H')./(W*H*H');
-        end
-    %end
+        while flagH
+            H = H-muH*W'*(W*H-V);
+            %projection
+            L1 = (1-sH1)*sqrt(p)+sH1;
+            H(1,:) = projeter(H(1,:),L1,1);
+            L1 = (1-sH2)*sqrt(p)+sH1;
+            H(2,:) = projeter(H(2,:),L1,1);
     
-    %if norm(H-HOld) > epsH
-        if sH > 0
-            HOld = H;
-            muH = 1.2*muH;
-            flagH = true;
-            obj = norm(V-W*H);
             
-            while flagH
-               H = H-muH*W'*(W*H-V);
-               %projection
-               L1 = (1-sH)*sqrt(p)+sH;
-                for i=1:r
-                    H(i,:) = projeter(H(i,:),L1,1);
-                end
-                
-                if norm(V-W*H) < obj || muH < 1e-200
-                    flagH = false;
-                else
-                    muH = muH/2;
-                end
+            if norm(V-W*H) < obj || muH < 1e-200
+                flagH = false;
+            else
+                muH = muH/2;
             end
-        else%algo mutiplicatif
-            H = H.*(W'*V)./(W'*W*H);
         end
-    %end
-    iter = iter +1
+    else%algo mutiplicatif
+        H = H.*(W'*V)./(W'*W*H);
+    end
+    iter = iter + 1;
 end
 
-R = (W*H);
+
+%Séparation de la composante difuse et spéculaire de l'image
+WD = W(:,1);
+WS = W(:,2);
+
+HD = H(1,:);
+HS = H(2,:);
+
+RD = (WD*HD);
+RS = (WS*HS);
 
 %Reconstruction de l'image en matrice de tableau
 k = 0;
 for i = 1:nI
     for j = 1:pI
         k = k+1;
-        RI(i,j) = R(1,k); 
+        RID(i,j,:) = RD(:,k); 
+        RIS(i,j,:) = RS(:,k); 
     end
 end
 
-RI = uint8(RI);
+RI = uint8(RIS + RID);
+RIS = uint8(RIS);
+RID = uint8(RID);
 
 %affichage pour les tests
-%norm(uint8(
 
 figure
 title('Méthode NMF')
@@ -137,12 +112,12 @@ title('Image originale')
 imshow(I)
 
 subplot(1,4,2)
-title('W')
-imshow(uint8(W))
+title('Composante difuse')
+imshow(uint8(RID))
 
 subplot(1,4,3)
-title('H')
-imshow(uint8(H))
+title('Composante spéculaire')
+imshow(uint8(RIS))
 
 subplot(1,4,4)
 title('Image restituée')
