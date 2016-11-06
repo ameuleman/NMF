@@ -25,7 +25,7 @@ V = double(V);
 r = 2;
 
 %sparceness
-sH1 = 0.005;
+sH1 = 0.01;
 sH2 = 0.4;
 
 %initialisation de W et H
@@ -44,36 +44,31 @@ HOld = zeros(r,p);
 epsW = 1e-5;
 epsH = 1e-5;
 
-
 iter = 0;
 muW = 0.85;
 muH = 0.85;
 while iter<1500%norm(W-WOld) > epsW || norm(H-HOld) > epsH
     W = W.*(V*H')./(W*H*H');
-
-    if sH2 > 0
-        HOld = H;
-        muH = 1.2*muH;
-        flagH = true;
-        obj = norm(V-W*H);
+    
+    HOld = H;
+    muH = 1.2*muH;
+    flagH = true;
+    obj = norm(V-W*H);
             
-        while flagH
-            H = H-muH*W'*(W*H-V);
-            %projection
-            L1 = (1-sH1)*sqrt(p)+sH1;
-            H(1,:) = projeter(H(1,:),L1,1);
-            L1 = (1-sH2)*sqrt(p)+sH1;
-            H(2,:) = projeter(H(2,:),L1,1);
+    while flagH
+        H = H-muH*W'*(W*H-V);
+        %projection
+        L1 = (1-sH1)*sqrt(p)+sH1;
+        H(1,:) = projeter(H(1,:),L1,1);
+        L1 = (1-sH2)*sqrt(p)+sH1;
+        H(2,:) = projeter(H(2,:),L1,1);
     
             
-            if norm(V-W*H) < obj || muH < 1e-200
-                flagH = false;
-            else
-                muH = muH/2;
-            end
+        if norm(V-W*H) < obj || muH < 1e-200
+            flagH = false;
+        else
+            muH = muH/2;
         end
-    else%algo mutiplicatif
-        H = H.*(W'*V)./(W'*W*H);
     end
     iter = iter + 1;
 end
@@ -99,26 +94,27 @@ for i = 1:nI
     end
 end
 
-RI = uint8(RIS + RID);
-RIS = uint8(RIS);
-RID = uint8(RID);
-
 %affichage pour les tests
 
 figure
 title('Méthode NMF')
-subplot(1,4,1)
+subplot(1,5,1)
 title('Image originale')
 imshow(I)
 
-subplot(1,4,2)
+subplot(1,5,2)
 title('Composante difuse')
 imshow(uint8(RID))
 
-subplot(1,4,3)
+subplot(1,5,3)
 title('Composante spéculaire')
 imshow(uint8(RIS))
 
-subplot(1,4,4)
+subplot(1,5,4)
 title('Image restituée')
-imshow(uint8(RI))
+imshow(uint8(RIS + RID))
+
+subplot(1,5,5)
+title('Image sans spécularité')
+imshow(uint8(double(I)-0.6*RIS))
+
