@@ -1,7 +1,7 @@
 clearvars;
 
 %données initiales
-I = imread('Documents/projet_zakha/faces/face00001.pgm');
+I = imread('lenna2.jpg');
 V = double(I);
 %V = V(100:150,110:160);
 %V = rand(256,256);

@@ -1,20 +1,32 @@
 clearvars;
 
 %données initiales
-I = imread('lenna2.jpg');
-V = double(I);
-%V = V(100:150,110:160);
-%V = rand(256,256);
+I = imread('lenna.jpg');
+
+%dimensions de l'image
+[nI, pI, qI] = size(I);
+if qI~=3, error('problème de couleur'); end
+
+%initialisation de la matrice des données
+k = 0;
+for i = 1:nI
+    for j = 1:pI
+        k = k+1;
+        V(:,k) = I(i,j,:); 
+    end
+end
 
 if min(V(:,:))<0, error('Valeurs négatives'); end
 
-%dimensions
+V = double(V);
+
+%dimensions des matrices correspondantes
 [n, p] = size(V);
-r = input('Entrez r : ');
+r = 2;
 
 %sparceness
-sW = 0.9;
-sH = 0.9;
+sW = 0;
+sH = 0;
 
 %initialisation de W et H
 W = rand(n,r);
@@ -102,15 +114,27 @@ while iter<1500%norm(W-WOld) > epsW || norm(H-HOld) > epsH
     iter = iter +1
 end
 
-R = uint8(W*H);
+R = (W*H);
+
+%Reconstruction de l'image en matrice de tableau
+k = 0;
+for i = 1:nI
+    for j = 1:pI
+        k = k+1;
+        RI(i,j) = R(1,k); 
+    end
+end
+
+RI = uint8(RI);
+
 %affichage pour les tests
-%norm(uint8(V)-R)
+%norm(uint8(
 
 figure
 title('Méthode NMF')
 subplot(1,4,1)
 title('Image originale')
-imshow(uint8(V))
+imshow(I)
 
 subplot(1,4,2)
 title('W')
@@ -122,4 +146,4 @@ imshow(uint8(H))
 
 subplot(1,4,4)
 title('Image restituée')
-imshow(uint8(R))
+imshow(uint8(RI))
