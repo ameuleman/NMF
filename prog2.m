@@ -109,17 +109,17 @@ R = uint8(W*H);
 figure
 title('Méthode NMF')
 subplot(1,4,1)
-title('Image originale')
 imshow(uint8(V))
+title('Image originale')
 
 subplot(1,4,2)
-title('W')
 imshow(uint8(W))
+title('W')
 
 subplot(1,4,3)
-title('H')
 imshow(uint8(H))
+title('H')
 
 subplot(1,4,4)
-title('Image restituée')
 imshow(uint8(R))
+title('Image restituée')

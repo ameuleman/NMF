@@ -52,10 +52,10 @@ while iter<1500%norm(W-WOld) > epsW || norm(H-HOld) > epsH
     
     HOld = H;
     muH = 1.2*muH;
-    flagH = true;
+    flag = true;
     obj = norm(V-W*H);
             
-    while flagH
+    while flag
         H = H-muH*W'*(W*H-V);
         %projection
         L1 = (1-sH1)*sqrt(p)+sH1;
@@ -65,7 +65,7 @@ while iter<1500%norm(W-WOld) > epsW || norm(H-HOld) > epsH
     
             
         if norm(V-W*H) < obj || muH < 1e-200
-            flagH = false;
+            flag = false;
         else
             muH = muH/2;
         end
@@ -74,7 +74,7 @@ while iter<1500%norm(W-WOld) > epsW || norm(H-HOld) > epsH
 end
 
 
-%Séparation de la composante difuse et spéculaire de l'image
+%Séparation de la composante diffuse et spéculaire de l'image
 WD = W(:,1);
 WS = W(:,2);
 
@@ -97,24 +97,26 @@ end
 %affichage pour les tests
 
 figure
-title('Méthode NMF')
+
 subplot(1,5,1)
-title('Image originale')
 imshow(I)
+title('Image originale')
 
 subplot(1,5,2)
-title('Composante difuse')
 imshow(uint8(RID))
+title('Composante diffuse')
 
 subplot(1,5,3)
-title('Composante spéculaire')
 imshow(uint8(RIS))
+title('Composante spéculaire')
 
 subplot(1,5,4)
-title('Image restituée')
 imshow(uint8(RIS + RID))
+title('Image restituée')
 
 subplot(1,5,5)
-title('Image sans spécularité')
 imshow(uint8(double(I)-0.5*RIS))
+title('Image sans spécularité')
+
+title('Méthode NMF')
 
