@@ -85,7 +85,6 @@ for i = 1:(r-1)
     HD(i,:) = H(i,:);
 end
 WS = W(:,r);
-
 HS = H(r,:);
 
 RD = (WD*HD);
@@ -94,36 +93,59 @@ RS = (WS*HS);
 %Reconstruction de l'image en matrice de tableaux
 k = 0;
 
+RID = zeros(nI,pI,3);
+RIS = zeros(nI,pI,3);
+mask = zeros(nI,pI);
+
 for i = 1:nI
     for j = 1:pI
         k = k+1;
         RID(i,j,:) = RD(:,k); 
-        RIS(i,j,:) = RS(:,k); 
+        RIS(i,j,:) = RS(:,k);
+        if norm(RIS(i,j))<30
+            mask(i,j) = 1;
+        else
+            mask(i,j) = 0;
+        end
     end
 end
 
+IR(:,:) = double(I(:,:,1));
+IG(:,:) = double(I(:,:,2));
+IB(:,:) = double(I(:,:,3));
+
 CIS = RID.*RIS./255;
+
+res(:,:,1) = inPainting(IR,mask);
+res(:,:,2) = inPainting(IG,mask);
+res(:,:,3) = inPainting(IB,mask);
 
 %affichage pour les tests
 
 figure
 
-subplot(1,5,1)
+subplot(2,3,1)
 imshow(I)
 title('Image originale')
 
-subplot(1,5,2)
+subplot(2,3,2)
 imshow(uint8(RID))
 title('Composante diffuse')
 
-subplot(1,5,3)
+subplot(2,3,3)
 imshow(uint8(RIS))
 title('Composante spéculaire')
 
-subplot(1,5,4)
+subplot(2,3,4)
 imshow(uint8(RID+RIS))
 title('Image restituée')
 
-subplot(1,5,5)
+subplot(2,3,5)
 imshow(uint8(CIS+double(I)-RIS))
 title('Image sans spécularité')
+
+subplot(2,3,6)
+imshow(uint8(res))
+title('Image reconstituée par inpainting')
+
+
