@@ -5,9 +5,9 @@ Utilisation de la factorisation par matrices non négatives afin de réduire la 
 Nous utilisons ShearLab 3D pour reconstruire l'image, il est donc nécessaire d'ajouter *ShearLab3D v1.1* et *2D Experiments* au path de Matlab. Ils sont disponibles sur http://www3.math.tu-berlin.de/numerik/www.shearlab.org/software.
 
 ##Utilisation
-Les images initiales sont stockées dans le répertoir *data/*.
+Les images initiales sont stockées dans le répertoire *data/*.
 
-*nmf_couleur.m* permet de traiter les images en couleur et les images en noir et blanc. Pour changer l'image à traiter, on modifie les données initiales dans ces fichier. Par exemple, pour traiter la cinquième image : 
+*nmf_couleur.m* permet de traiter les images en couleurs et les images en noir et blanc. Pour changer l'image à traiter, on modifie les données initiales dans ces fichier. Par exemple, pour traiter la cinquième image : 
 
 	%données initiales
 	I = imread('data/image5.jpg');
@@ -17,4 +17,4 @@ L'exécution du programme peut prendre plusieurs minutes et dépend de la taille
 ##Résultats des tests
 Les résultats correspondant aux différentes images de test sont disponibles dans le répertoire *resultats/*. 
 
-*premiers_res.png* correspond aux résultats optenu avant l'amélioration de la méthode.
+*premiers_res.png* correspond aux résultats obtenu avant l'amélioration de la méthode.
