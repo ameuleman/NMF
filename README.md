@@ -2,7 +2,7 @@
 Utilisation de la factorisation par matrices non négatives afin de réduire la composante spéculaire et faciliter le traitement d'image.
 
 ##Prérequis
-Nous utilisons ShearLab 3D pour reconstruire l'image, il est donc nécessaire d'ajouter ***ShearLab3D v1.1*** et ***2D Experiments*** au path de Matlab. Ils sont disponibles sur http://www3.math.tu-berlin.de/numerik/www.shearlab.org/software.
+Nous utilisons *ShearLab 3D* pour reconstruire l'image, il est donc nécessaire d'ajouter ***ShearLab3D v1.1*** et ***2D Experiments*** au path de Matlab. Ils sont disponibles sur http://www3.math.tu-berlin.de/numerik/www.shearlab.org/software.
 
 ##Utilisation
 Les images initiales sont stockées dans le répertoire *data/*.
