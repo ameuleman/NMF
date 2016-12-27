@@ -9,7 +9,7 @@ function [result] = inPainting(img, mask)
 
     imgMasked = img.*mask;
 
-    display('Traitement d une couleur');
+    display('Traitement d''une couleur');
     result = double(SLExperimentInpaint2D(imgMasked,mask,iterations,stopFactor,sl2d2));  
 
 end

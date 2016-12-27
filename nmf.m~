@@ -1,7 +1,7 @@
 clearvars;
 
 %données initiales
-I = imread('data/image5.png');
+I = imread('data/image4.png');
 
 %dimensions de l'image
 [nI, pI, qI] = size(I);
@@ -114,11 +114,10 @@ for i = 1:nI
 end
 
 %Utilisation de l'algorithme d'inpainting
-res = I;
-
-for i = 1:qI
-    res(:,:,i) = inPainting(double(I(:,:,i)),mask);
-end
+for i = 
+res(:,:,1) = inPainting(IR,mask);
+res(:,:,2) = inPainting(IG,mask);
+res(:,:,3) = inPainting(IB,mask);
 
 
 CIS = RID.*RIS./255;
@@ -150,3 +149,5 @@ title('Image sans spécularité')
 subplot(2,3,6)
 imshow(uint8(res))
 title('Image reconstituée par inpainting')
+
+
