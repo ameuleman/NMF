@@ -1,7 +1,7 @@
 clearvars;
 
 %données initiales
-I = imread('data/image5.png');
+I = imread('data/image1.png');
 
 %dimensions de l'image
 [nI, pI, qI] = size(I);
