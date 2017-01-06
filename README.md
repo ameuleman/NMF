@@ -13,7 +13,7 @@ Les résultats obtenus par inpainting n'étant pas satisfaisants et longs à obt
 ##Utilisation
 Les images initiales sont stockées dans le répertoire *data/*.
 
-***nmf.m*** permet de traiter les images en couleurs et les images en noir et blanc. Pour changer l'image à traiter, on modifie les données initiales dans ces fichier. Par exemple, pour traiter la cinquième image : 
+***nmf.m*** permet de traiter les images en couleurs et les images en noir et blanc. Pour changer l'image à traiter, on modifie les données initiales au début de ce fichier. Par exemple, pour traiter la cinquième image : 
 
 	%données initiales
 	I = imread('data/image5.jpg');
