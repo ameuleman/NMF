@@ -24,3 +24,5 @@ L'exécution du programme peut prendre plusieurs minutes et dépend de la taille
 Les résultats correspondant aux différentes images de test sont disponibles dans le répertoire *resultats/*. 
 
 *premiers_res.png* correspond aux résultats obtenus avant l'amélioration de la méthode.
+
+![result](/resultats/res1.png)
