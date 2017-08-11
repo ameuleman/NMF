@@ -4,7 +4,7 @@ Utilisation de la factorisation par matrices non négatives afin de réduire la 
 ## Prérequis
 Nous utilisons *ShearLab 3D* pour reconstruire l'image par inpainting, il est donc nécessaire d'ajouter ***ShearLab3D v1.1*** et ***2D Experiments*** au path de Matlab. Ils sont disponibles sur http://www3.math.tu-berlin.de/numerik/www.shearlab.org/software.
 
-Les résultats obtenus par inpainting n'étant pas satisfaisants et longs à obtenir, il est possible de désactiver son utilisation en commentant dans ***nmf.m*** à la ligne 120 : 
+Les résultats obtenus par inpainting n'étant pas satisfaisants et longs à obtenir, son utilisation est désactivée par défaut. il est possible de la réactiver en enlevant le commentaire dans ***nmf.m*** à la ligne 120 : 
 
 	for i = 1:qI
   	  res(:,:,i) = inPainting(double(I(:,:,i)),mask);
