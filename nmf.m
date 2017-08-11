@@ -116,9 +116,9 @@ end
 %Utilisation de l'algorithme d'inpainting
 res = I;
 
-for i = 1:qI
-    res(:,:,i) = inPainting(double(I(:,:,i)),mask);
-end
+% for i = 1:qI
+%     res(:,:,i) = inPainting(double(I(:,:,i)),mask);
+% end
 
 
 CIS = RID.*RIS./255;
