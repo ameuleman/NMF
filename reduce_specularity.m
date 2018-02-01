@@ -1,8 +1,8 @@
-clearvars;
-clc;
-
-%données initiales
-I = imread('data/image1.png');
+function [J] = reduce_specularity(I,tol)
+%REDUCE_SPECULARITY Reduce the specularity component of an image
+%   I is the original image
+%   tol is the tolerance for convergence test
+%   J is the processed image
 
 %dimensions de l'image
 [nI, pI, qI] = size(I);
@@ -19,7 +19,7 @@ for i = 1:nI
     end
 end
 
-if min(V(:,:))<0, error('Valeurs négatives'); end
+if min(V(:,:))<0, err('Negative values'); end
 
 V = double(V);
 
@@ -36,26 +36,20 @@ H = rand(r,p);
 
 L1 = (1-sH1)*sqrt(p)+sH1;
 for l = 1:(r-1)
-    H(l,:) = projeter(H(l,:),L1,1);
+    H(l,:) = project(H(l,:),L1,1);
 end
 L1 = (1-sH2)*sqrt(p)+sH1;
-H(2,:) = projeter(H(2,:),L1,1);
-    
-WOld = zeros(n,r);
-HOld = zeros(r,p);
+H(2,:) = project(H(2,:),L1,1);
 
-%tolérances
-epsW = 1e-5;
-epsH = 1e-3;
 
 iter = 0;
 muW = 0.85;
 muH = 0.85;
 
 mynorm = @(u)max(max(max(abs(u))));
-error = 2*epsH
+err = 2*tol;
 
-while iter<500 && error>epsH
+while iter<500 && err>tol;
     W = W.*(V*H')./(W*H*H');
     
     HOld = H;
@@ -68,10 +62,10 @@ while iter<500 && error>epsH
         %projection
         L1 = (1-sH1)*sqrt(p)+sH1;
         for l = 1:(r-1)
-            H(l,:) = projeter(H(l,:),L1,1);
+            H(l,:) = project(H(l,:),L1,1);
         end
         L1 = (1-sH2)*sqrt(p)+sH1;
-        H(r,:) = projeter(H(r,:),L1,1);
+        H(r,:) = project(H(r,:),L1,1);
     
             
         if mynorm(V-W*H) < obj || muH < 1e-200
@@ -80,8 +74,9 @@ while iter<500 && error>epsH
             muH = muH/2;
         end
     end
+    
     iter = iter + 1;
-    error = mynorm(HOld-H);
+    err = mynorm(HOld-H);
 end
 
 
@@ -119,40 +114,53 @@ for i = 1:nI
     end
 end
 
-%Utilisation de l'algorithme d'inpainting
-res = I;
-
-% for i = 1:qI
-%     res(:,:,i) = inPainting(double(I(:,:,i)),mask);
-% end
-
-
 CIS = RID.*RIS./255;
 
 %affichage pour les tests
 
-figure
+J = CIS+double(I)-RIS;
 
-subplot(2,3,1)
-imshow(I)
-title('Image originale')
+function s = project(x,L1,L2)
+%projeter un vecteur sur les vecteurs à composantes positives ou nulles
+%le plus proche au sens des moindres carrés
 
-subplot(2,3,2)
-imshow(uint8(RID))
-title('Composante diffuse')
+n = length(x);
 
-subplot(2,3,3)
-imshow(uint8(RIS))
-title('Composante spéculaire')
+s = x+(L1-sum(x))/n;
+e = ones(n,1)';
+Z = [];
+q = 0;
 
-subplot(2,3,4)
-imshow(uint8(RID+RIS))
-title('Image restituée')
+flag = true;
 
-subplot(2,3,5)
-imshow(uint8(CIS+double(I)-RIS))
-title('Image sans spécularité')
+while flag
+    m = L1/(n-q)*e;
+    m(Z) = 0;
+    
+    %calcul de alpha
+    tmp = s-m;
+    c = [sum(tmp.^2) 2*sum(m.*tmp) sum(m.^2)-L2^2];
+    delta = c(2)^2-4*c(1)*c(3);
+    %r = [(-c(2)-sqrt(delta))/(2*c(1)) (-c(2)+sqrt(delta))/(2*c(1))];
+    alpha = (-c(2)+real(sqrt(delta)))/(2*c(1));
+        
+    s = m+alpha*tmp;
+    
+    if any(s(:)<0)%si s a des composantes négatives
+        %recherche des valeurs négatives
+        Z = find(s<=0);
+        q = length(Z);
+    
+        %on annule les composantes negatives de s
+        s(Z) = 0;
+    
+        c = (sum(s)-L1)/(n-q);
+        s = s-c;
+        s(Z) = 0;
+    else
+        flag = false;
+    end
+end
 
-subplot(2,3,6)
-imshow(uint8(res))
-title('Image reconstituée par inpainting')
+
+
