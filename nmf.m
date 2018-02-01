@@ -2,7 +2,7 @@ clearvars;
 clc;
 
 %données initiales
-I = imread('data/0959.png');
+I = imread('data/image1.png');
 
 %dimensions de l'image
 [nI, pI, qI] = size(I);
